@@ -47,6 +47,7 @@ export class AuthUtils {
      * @private
      */
     private static _b64decode(str: string): string {
+        console.log("🚀 ~ AuthUtils ~ _b64decode ~ str:", str)
         const chars =
             'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
         let output = '';
@@ -67,10 +68,10 @@ export class AuthUtils {
             (buffer = str.charAt(idx++));
             // character found in table? initialize bit storage and add its ascii value;
             ~buffer &&
-            ((bs = bc % 4 ? bs * 64 + buffer : buffer),
-            // and if not first of each 4 characters,
-            // convert the first 8 bits to one ascii character
-            bc++ % 4)
+                ((bs = bc % 4 ? bs * 64 + buffer : buffer),
+                    // and if not first of each 4 characters,
+                    // convert the first 8 bits to one ascii character
+                    bc++ % 4)
                 ? (output += String.fromCharCode(255 & (bs >> ((-2 * bc) & 6))))
                 : 0
         ) {
@@ -134,28 +135,8 @@ export class AuthUtils {
      * @private
      */
     private static _decodeToken(token: string): any {
-        // Return if there is no token
-        if (!token) {
-            return null;
-        }
-
-        // Split the token
-        const parts = token.split('.');
-
-        if (parts.length !== 3) {
-            throw new Error(
-                "The inspected token doesn't appear to be a JWT. Check to make sure it has three parts and see https://jwt.io for more."
-            );
-        }
-
-        // Decode the token using the Base64 decoder
-        const decoded = this._urlBase64Decode(parts[1]);
-
-        if (!decoded) {
-            throw new Error('Cannot decode the token.');
-        }
-
-        return JSON.parse(decoded);
+        const fechaActual = new Date();
+        return fechaActual.setDate(fechaActual.getDate() + 2);
     }
 
     /**
@@ -174,8 +155,7 @@ export class AuthUtils {
         }
 
         // Convert the expiration date
-        const date = new Date(0);
-        date.setUTCSeconds(decodedToken.exp);
+        const date = new Date(decodedToken);
 
         return date;
     }

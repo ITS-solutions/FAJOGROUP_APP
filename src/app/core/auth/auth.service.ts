@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
-import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../../environment/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -61,19 +61,24 @@ export class AuthService {
         }
 
         return this._httpClient.post(`${environment.API_URL}/auth/login`, credentials).pipe(
+            map((response: any) => {
+                return {
+                    accessToken: response?.data?.access_token,
+                    tokenType: "bearer",
+                    user: {
+                        ...response?.data?.user,
+                        avatar: "images/avatars/brian-hughes.jpg",
+                        status: "online",
+                        name: `${response?.data?.user?.name} ${response?.data?.user?.lastame}`,
+                    },
+                }
+            })
+        ).pipe(
             switchMap((response: any) => {
-                console.log("🚀 ~ AuthService ~ switchMap ~ response:", response)
-                // Store the access token in the local storage
-                this.accessToken = response?.data?.access_token;
-
-                // Set the authenticated flag to true
+                this.accessToken = response.accessToken;
                 this._authenticated = true;
-
-                // Store the user on the user service
-                this._userService.user = response?.data?.user;
-
-                // Return a new observable with the response
-                return of(response.data);
+                this._userService.user = response.user;
+                return of(response);
             })
         );
     }
@@ -120,14 +125,14 @@ export class AuthService {
      * Sign out
      */
     signOut(): Observable<any> {
-        // Remove the access token from the local storage
-        localStorage.removeItem('accessToken');
-
-        // Set the authenticated flag to false
-        this._authenticated = false;
-
-        // Return the observable
-        return of(true);
+        return this._httpClient.get(`${environment.API_URL}/auth/logout`).pipe(
+            tap((response: any) => {
+                localStorage.removeItem('accessToken');
+                this._authenticated = false;
+            }),
+            map(() => true),
+            catchError(() => of(false))
+        );
     }
 
     /**
