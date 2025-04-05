@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { FuseNavigationItem } from '@fuse/components/navigation';
 import { FuseMockApiService } from '@fuse/lib/mock-api';
+import { PermissionsService } from 'app/modules/services/permissions.service';
 import {
     compactNavigation,
     defaultNavigation,
@@ -11,76 +12,71 @@ import { cloneDeep } from 'lodash-es';
 
 @Injectable({ providedIn: 'root' })
 export class NavigationMockApi {
-    private readonly _compactNavigation: FuseNavigationItem[] =
-        compactNavigation;
-    private readonly _defaultNavigation: FuseNavigationItem[] =
-        defaultNavigation;
-    private readonly _futuristicNavigation: FuseNavigationItem[] =
-        futuristicNavigation;
-    private readonly _horizontalNavigation: FuseNavigationItem[] =
-        horizontalNavigation;
+    private readonly _compactNavigation: FuseNavigationItem[] = compactNavigation;
+    private readonly _defaultNavigation: FuseNavigationItem[] = defaultNavigation;
+    private readonly _futuristicNavigation: FuseNavigationItem[] = futuristicNavigation;
+    private readonly _horizontalNavigation: FuseNavigationItem[] = horizontalNavigation;
+
+    private _permissionsService = inject(PermissionsService);
 
     /**
      * Constructor
      */
     constructor(private _fuseMockApiService: FuseMockApiService) {
-        // Register Mock API handlers
         this.registerHandlers();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+    /**
+     * Filtrar la navegación basada en permisos
+     */
+    private filterNavigation(navigation: FuseNavigationItem[]): FuseNavigationItem[] {
+        const permissions = this._permissionsService.getPermissionsSync();
+
+        function filterItems(items: FuseNavigationItem[]): FuseNavigationItem[] {
+            return items
+                .map((item) => {
+                    // Siempre mostrar elementos con `alwaysVisible`
+                    if (item.alwaysVisible) return item;
+
+                    // Si el elemento tiene hijos, filtrar recursivamente
+                    if (item.children) {
+                        const filteredChildren = filterItems(item.children);
+                        return filteredChildren.length > 0 ? { ...item, children: filteredChildren } : null;
+                    }
+
+                    // Extraer la clave relevante del `id`
+                    const permissionKey = item.id.split('.').pop(); // Obtiene la última parte del `id` (por ejemplo, "roles" de "administrative.roles")
+
+                    // Manejo especial para `roles`
+                    if (permissionKey === 'roles') {
+                        return permissions?.data?.permissions?.administrative?.parameters?.roles?.show?.assigned
+                            ? item
+                            : null;
+                    }
+
+                    // Verificar si el permiso está asignado para otros casos
+                    return permissions?.data?.permissions?.administrative?.[permissionKey]?.show?.assigned
+                        ? item
+                        : null;
+                })
+                .filter((item) => item !== null) as FuseNavigationItem[];
+        }
+
+        return filterItems(navigation);
+    }
 
     /**
      * Register Mock API handlers
      */
     registerHandlers(): void {
-        // -----------------------------------------------------------------------------------------------------
-        // @ Navigation - GET
-        // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService.onGet('api/common/navigation').reply(() => {
-            // Fill compact navigation children using the default navigation
-            this._compactNavigation.forEach((compactNavItem) => {
-                this._defaultNavigation.forEach((defaultNavItem) => {
-                    if (defaultNavItem.id === compactNavItem.id) {
-                        compactNavItem.children = cloneDeep(
-                            defaultNavItem.children
-                        );
-                    }
-                });
-            });
-
-            // Fill futuristic navigation children using the default navigation
-            this._futuristicNavigation.forEach((futuristicNavItem) => {
-                this._defaultNavigation.forEach((defaultNavItem) => {
-                    if (defaultNavItem.id === futuristicNavItem.id) {
-                        futuristicNavItem.children = cloneDeep(
-                            defaultNavItem.children
-                        );
-                    }
-                });
-            });
-
-            // Fill horizontal navigation children using the default navigation
-            this._horizontalNavigation.forEach((horizontalNavItem) => {
-                this._defaultNavigation.forEach((defaultNavItem) => {
-                    if (defaultNavItem.id === horizontalNavItem.id) {
-                        horizontalNavItem.children = cloneDeep(
-                            defaultNavItem.children
-                        );
-                    }
-                });
-            });
-
-            // Return the response
             return [
                 200,
                 {
-                    compact: cloneDeep(this._compactNavigation),
-                    default: cloneDeep(this._defaultNavigation),
-                    futuristic: cloneDeep(this._futuristicNavigation),
-                    horizontal: cloneDeep(this._horizontalNavigation),
+                    compact: cloneDeep(this.filterNavigation(this._compactNavigation)),
+                    default: cloneDeep(this.filterNavigation(this._defaultNavigation)),
+                    futuristic: cloneDeep(this.filterNavigation(this._futuristicNavigation)),
+                    horizontal: cloneDeep(this.filterNavigation(this._horizontalNavigation)),
                 },
             ];
         });

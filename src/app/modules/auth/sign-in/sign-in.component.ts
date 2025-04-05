@@ -101,7 +101,6 @@ export class AuthSignInComponent implements OnInit {
                         'redirectURL'
                     ) || '/signed-in-redirect';
 
-                console.log('🔄 Redirigiendo a:', redirectURL);
                 // Navigate to the redirect url
                 this._router.navigateByUrl(redirectURL);
             },

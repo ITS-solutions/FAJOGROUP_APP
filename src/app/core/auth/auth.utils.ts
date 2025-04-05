@@ -160,3 +160,17 @@ export class AuthUtils {
         return date;
     }
 }
+
+export interface AuthResponse {
+    data: {
+        access_token: string;
+        user: {
+            id: number;
+            name: string;
+            lastame: string; // Posible error en backend, debería ser `lastname`
+            email: string;
+            avatar?: string;
+            status?: string;
+        };
+    };
+}

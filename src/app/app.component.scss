@@ -4,3 +4,7 @@
     width: 100%;
     height: 100%;
 }
+
+.mat-dialog-container {
+    padding: 0 !important; /* Elimina el padding global del contenedor del modal */
+}

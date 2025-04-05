@@ -1,0 +1,207 @@
+<div class="m-0 p-0">
+    <!-- Header -->
+    <div class="rounded-t-lg bg-primary p-4 text-white">
+        <h2 class="text-lg font-semibold">Crear Usuario</h2>
+    </div>
+
+    <!-- Formulario -->
+    <form
+        [formGroup]="userForm"
+        (ngSubmit)="onSubmit()"
+        class="max-h-[70vh] overflow-y-auto p-6"
+    >
+        <div class="grid grid-cols-3 gap-4">
+            <!-- Nombre -->
+            <mat-form-field class="col-span-3 md:col-span-1" appearance="fill">
+                <mat-label>Nombre</mat-label>
+                <input matInput type="text" formControlName="name" required />
+                <mat-error
+                    *ngIf="
+                        userForm.get('name')?.invalid &&
+                        userForm.get('name')?.touched
+                    "
+                >
+                    El nombre es obligatorio.
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Apellido -->
+            <mat-form-field class="col-span-3 md:col-span-1" appearance="fill">
+                <mat-label>Apellido</mat-label>
+                <input
+                    matInput
+                    type="text"
+                    formControlName="lastname"
+                    required
+                />
+                <mat-error
+                    *ngIf="
+                        userForm.get('lastname')?.invalid &&
+                        userForm.get('lastname')?.touched
+                    "
+                >
+                    El apellido es obligatorio.
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Identificación -->
+            <mat-form-field class="col-span-3 md:col-span-1" appearance="fill">
+                <mat-label>Identificación</mat-label>
+                <input
+                    matInput
+                    type="number"
+                    formControlName="identification"
+                    required
+                />
+                <mat-error
+                    *ngIf="
+                        userForm.get('identification')?.invalid &&
+                        userForm.get('identification')?.touched
+                    "
+                >
+                    La identificación es obligatoria.
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Teléfono -->
+            <mat-form-field class="col-span-3 md:col-span-1" appearance="fill">
+                <mat-label>Número de Teléfono</mat-label>
+                <input
+                    matInput
+                    type="tel"
+                    formControlName="phone_number"
+                    autocomplete="off"
+                    pattern="[0-9]*"
+                    placeholder="Ejemplo: 3123456789"
+                />
+                <mat-error
+                    *ngIf="
+                        userForm.get('phone_number')?.invalid &&
+                        userForm.get('phone_number')?.touched
+                    "
+                >
+                    Ingresa un número de teléfono válido.
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Dirección -->
+            <mat-form-field class="col-span-3 md:col-span-1" appearance="fill">
+                <mat-label>Dirección</mat-label>
+                <input matInput type="text" formControlName="address" />
+            </mat-form-field>
+
+            <!-- Email -->
+            <mat-form-field class="col-span-3 md:col-span-1" appearance="fill">
+                <mat-label>Email</mat-label>
+                <input
+                    autocomplete="off"
+                    matInput
+                    type="email"
+                    formControlName="email"
+                    required
+                />
+                <mat-error
+                    *ngIf="
+                        userForm.get('email')?.invalid &&
+                        userForm.get('email')?.touched
+                    "
+                >
+                    Ingresa un email válido.
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Contraseña -->
+            <mat-form-field class="col-span-3 md:col-span-1" appearance="fill">
+                <mat-label>Contraseña</mat-label>
+                <input
+                    matInput
+                    type="password"
+                    formControlName="password"
+                    autocomplete="new-password"
+                    required
+                />
+                <mat-error
+                    *ngIf="
+                        userForm.get('password')?.invalid &&
+                        userForm.get('password')?.touched
+                    "
+                >
+                    La contraseña es obligatoria.
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Confirmar Contraseña -->
+            <mat-form-field class="col-span-3 md:col-span-1" appearance="fill">
+                <mat-label>Confirmar Contraseña</mat-label>
+                <input
+                    matInput
+                    type="password"
+                    formControlName="password_confirmation"
+                    autocomplete="new-password"
+                    required
+                />
+                <mat-error
+                    *ngIf="
+                        userForm.get('password_confirmation')?.invalid &&
+                        userForm.get('password_confirmation')?.touched
+                    "
+                >
+                    La confirmación de contraseña es obligatoria.
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Tipo de Identificación -->
+            <mat-form-field class="col-span-3 md:col-span-1" appearance="fill">
+                <mat-label>Tipo de Identificación</mat-label>
+                <mat-select formControlName="type_identification_id" required>
+                    <mat-option
+                        *ngFor="let type of identificationTypes"
+                        [value]="type.id"
+                    >
+                        {{ type.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Roles -->
+            <mat-form-field class="col-span-3 md:col-span-1" appearance="fill">
+                <mat-label>Roles</mat-label>
+                <mat-select formControlName="roles" multiple required>
+                    <mat-option *ngFor="let role of roles" [value]="role.id">
+                        {{ role.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!-- Footer -->
+        <div class="border-t p-4">
+            <div class="flex justify-end gap-4">
+                <!-- Botón Cancelar -->
+                <div class="flex items-center">
+                    <button
+                        mat-button
+                        type="button"
+                        class="rounded-md border border-gray-300 px-6 py-3 text-gray-600 transition-all duration-200 hover:bg-gray-500 hover:text-white"
+                        (click)="onCancel()"
+                    >
+                        Cancelar
+                    </button>
+                </div>
+
+                <!-- Botón Guardar -->
+                <div class="flex items-center">
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        type="submit"
+                        [disabled]="userForm.invalid"
+                        class="hover:bg-primary-dark flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-white shadow-md transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

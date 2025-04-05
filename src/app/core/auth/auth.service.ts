@@ -4,13 +4,14 @@ import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import { catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../../environment/environment';
+import { PermissionsService } from 'app/modules/services/permissions.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     private _authenticated: boolean = false;
     private _httpClient = inject(HttpClient);
     private _userService = inject(UserService);
-
+    private _permissionsService = inject(PermissionsService);
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -57,7 +58,7 @@ export class AuthService {
     signIn(credentials: { identification: string; password: string }): Observable<any> {
         // Throw error, if the user is already logged in
         if (this._authenticated) {
-            return throwError('User is already logged in.');
+            return
         }
 
         return this._httpClient.post(`${environment.API_URL}/auth/login`, credentials).pipe(
@@ -74,10 +75,16 @@ export class AuthService {
                 }
             })
         ).pipe(
-            switchMap((response: any) => {
+            switchMap(async (response: any) => {
                 this.accessToken = response.accessToken;
                 this._authenticated = true;
+
+                // Guardar usuario en el servicio de usuario
                 this._userService.user = response.user;
+
+                // Cargar permisos antes de continuar
+                await this._permissionsService.loadPermissions(this.accessToken, response.user.id);
+
                 return of(response);
             })
         );
@@ -125,14 +132,9 @@ export class AuthService {
      * Sign out
      */
     signOut(): Observable<any> {
-        return this._httpClient.get(`${environment.API_URL}/auth/logout`).pipe(
-            tap((response: any) => {
-                localStorage.removeItem('accessToken');
-                this._authenticated = false;
-            }),
-            map(() => true),
-            catchError(() => of(false))
-        );
+        localStorage.removeItem('accessToken');
+        this._authenticated = false;
+        return this._httpClient.get(`${environment.API_URL}/auth/logout`).pipe();
     }
 
     /**
