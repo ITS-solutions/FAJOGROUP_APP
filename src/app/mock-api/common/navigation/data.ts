@@ -28,7 +28,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'Roles',
                 type: 'basic',
                 icon: 'heroicons_outline:user-group',
-                link: '/roles'
+                link: '/administrative/roles'
             }
         ]
     }

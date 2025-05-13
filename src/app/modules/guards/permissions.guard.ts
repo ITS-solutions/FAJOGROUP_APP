@@ -6,14 +6,18 @@ export const permissionsGuard: CanActivateFn = (route: ActivatedRouteSnapshot, s
     const permissionsService = inject(PermissionsService);
     const router = inject(Router);
 
-    // Obtiene los permisos de forma sincrónica
     const permissions = permissionsService.getPermissionsSync();
 
-    // Obtiene el ID de la ruta desde los datos
     const routeId = route.data?.['id'];
 
-    // Verifica si el ID de la ruta es válido y si el permiso está asignado
-    if (!routeId || !permissions?.data?.permissions.administrative?.[routeId]?.show?.assigned) {
+    const routePermissions =
+        permissions?.data?.permissions.administrative?.[routeId]?.show?.assigned ||
+        permissions?.data?.permissions.administrative?.parameters?.[routeId]?.show?.assigned;
+
+    if (
+        !routeId ||
+        !routePermissions
+    ) {
         console.warn(`Acceso denegado a ${routeId}`);
         router.navigate(['/example']);
         return false;
