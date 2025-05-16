@@ -41,7 +41,6 @@ export class RolesComponent implements OnInit {
      */
     loadRoles(): void {
         this.roleService.getRoles().then((roles) => {
-            console.log('Roles cargados:', roles);
             this.roles = roles;
         });
     }

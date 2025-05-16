@@ -65,7 +65,6 @@ export class UsersComponent implements OnInit {
      */
     load(): void {
         this.usersService.getUsers().then((users) => {
-            console.log("🚀 ~ UsersComponent ~ this.usersService.getUsers ~ users:", users)
             this.users = users;
         })
     }

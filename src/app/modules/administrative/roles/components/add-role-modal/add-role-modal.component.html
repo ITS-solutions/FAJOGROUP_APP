@@ -1,1 +1,48 @@
-<p>add-role-modal works!</p>
+<div class="m-0 w-[600px] p-0">
+    <!-- Header -->
+    <div class="rounded-t-lg bg-blue-600 p-4 text-white">
+        <h2 class="text-lg font-semibold">
+            {{ data ? 'Editar Rol' : 'Crear Rol' }}
+        </h2>
+    </div>
+
+    <form [formGroup]="roleForm" class="rounded-b-lg bg-white p-4">
+        <!-- Nombre del Rol -->
+        <div class="mb-6">
+            <label class="mb-2 block text-sm font-bold text-gray-700"
+                >Nombre del Rol</label
+            >
+            <input
+                formControlName="name"
+                class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Ej: Administrador"
+            />
+        </div>
+
+        <!-- Permisos -->
+        <div class="mb-6 rounded-lg border p-4">
+            <h3 class="mb-4 font-bold text-gray-700">Permisos</h3>
+            <div class="max-h-96 overflow-y-auto">
+                <app-permission-group [id]="data?.id" ></app-permission-group>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="flex justify-end gap-3">
+            <button
+                type="button"
+                (click)="close()"
+                class="rounded-lg border px-4 py-2 transition-colors hover:bg-gray-100"
+            >
+                Cancelar
+            </button>
+            <button
+                type="submit"
+                (click)="save()"
+                class="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+            >
+                {{ data ? 'Actualizar' : 'Crear' }}
+            </button>
+        </div>
+    </form>
+</div>

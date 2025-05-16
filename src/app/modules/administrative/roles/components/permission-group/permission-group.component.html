@@ -1,0 +1,174 @@
+<div *ngIf="permissionsGroup" class="row">
+    <!-- Nivel 1: administrative -->
+    <div *ngFor="let sectionKey of getGroupKeys(permissionsGroup)">
+        <h4>{{ sectionKey | titlecase }}</h4>
+        <div [formGroup]="permissionsGroup.get(sectionKey)">
+            <!-- Nivel 2: parameters y users -->
+            <ng-container
+                *ngFor="
+                    let subKey of getGroupKeys(permissionsGroup.get(sectionKey))
+                "
+            >
+                <ng-container
+                    *ngIf="
+                        isFormGroup(permissionsGroup.get([sectionKey, subKey]))
+                    "
+                >
+                    <!-- Si es un grupo anidado (como parameters) -->
+                    <div
+                        *ngIf="
+                            isGroupOfGroups(
+                                permissionsGroup.get([sectionKey, subKey])
+                            )
+                        "
+                    >
+                        <h5 class="mt-3">{{ subKey | titlecase }}</h5>
+                        <div
+                            [formGroup]="
+                                permissionsGroup.get([sectionKey, subKey])
+                            "
+                        >
+                            <div
+                                *ngFor="
+                                    let moduleKey of getGroupKeys(
+                                        permissionsGroup.get([
+                                            sectionKey,
+                                            subKey,
+                                        ])
+                                    )
+                                "
+                            >
+                                <fieldset class="mb-2 border p-2">
+                                    <legend class="w-auto px-2">
+                                        {{ moduleKey | titlecase }}
+                                    </legend>
+                                    <div
+                                        [formGroup]="
+                                            permissionsGroup.get([
+                                                sectionKey,
+                                                subKey,
+                                                moduleKey,
+                                            ])
+                                        "
+                                    >
+                                        <div
+                                            *ngFor="
+                                                let actionKey of getGroupKeys(
+                                                    permissionsGroup.get([
+                                                        sectionKey,
+                                                        subKey,
+                                                        moduleKey,
+                                                    ])
+                                                )
+                                            "
+                                            class="form-check"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                class="form-check-input"
+                                                [formControl]="
+                                                    permissionsGroup.get([
+                                                        sectionKey,
+                                                        subKey,
+                                                        moduleKey,
+                                                        actionKey,
+                                                    ])
+                                                "
+                                                [id]="
+                                                    sectionKey +
+                                                    '_' +
+                                                    subKey +
+                                                    '_' +
+                                                    moduleKey +
+                                                    '_' +
+                                                    actionKey
+                                                "
+                                            />
+                                            <label
+                                                class="form-check-label"
+                                                [for]="
+                                                    sectionKey +
+                                                    '_' +
+                                                    subKey +
+                                                    '_' +
+                                                    moduleKey +
+                                                    '_' +
+                                                    actionKey
+                                                "
+                                            >
+                                                {{ actionKey | titlecase }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Si es directamente un grupo de acciones (como users) -->
+                    <div
+                        *ngIf="
+                            !isGroupOfGroups(
+                                permissionsGroup.get([sectionKey, subKey])
+                            )
+                        "
+                    >
+                        <fieldset class="mb-2 border p-2">
+                            <legend class="w-auto px-2">
+                                {{ subKey | titlecase }}
+                            </legend>
+                            <div
+                                [formGroup]="
+                                    permissionsGroup.get([sectionKey, subKey])
+                                "
+                            >
+                                <div
+                                    *ngFor="
+                                        let actionKey of getGroupKeys(
+                                            permissionsGroup.get([
+                                                sectionKey,
+                                                subKey,
+                                            ])
+                                        )
+                                    "
+                                    class="form-check"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        [formControl]="
+                                            permissionsGroup.get([
+                                                sectionKey,
+                                                subKey,
+                                                actionKey,
+                                            ])
+                                        "
+                                        [id]="
+                                            sectionKey +
+                                            '_' +
+                                            subKey +
+                                            '_' +
+                                            actionKey
+                                        "
+                                    />
+                                    <label
+                                        class="form-check-label"
+                                        [for]="
+                                            sectionKey +
+                                            '_' +
+                                            subKey +
+                                            '_' +
+                                            actionKey
+                                        "
+                                    >
+                                        {{ actionKey | titlecase }}
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>

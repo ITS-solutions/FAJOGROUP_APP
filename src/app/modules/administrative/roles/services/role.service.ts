@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environment/environment';
 import { Role } from '../types/Role.type';
+import { firstValueFrom, map } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -15,7 +16,11 @@ export class RoleService {
      * Obtener todos los roles
      */
     getRoles(): Promise<Role[]> {
-        return this.http.get<Role[]>(this.apiUrl).toPromise();
+        return firstValueFrom(
+            this.http.get<{ data: { data: Role[] } }>(this.apiUrl).pipe(
+                map(response => response.data.data)
+            )
+        );
     }
 
     /**
@@ -37,5 +42,14 @@ export class RoleService {
      */
     deleteRole(id: number): Promise<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`).toPromise();
+    }
+
+    /**
+     * Obtener un rol por ID
+     */
+    getRoleById(id: number): Promise<{ name: string; permissions: any }> {
+        return this.http.get<{ data: { name: string; permissions: any } }>(`${this.apiUrl}/${id}`)
+            .pipe(map(response => response.data))
+            .toPromise();
     }
 }
