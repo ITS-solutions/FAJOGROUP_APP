@@ -12,7 +12,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
     },
     {
         id: 'administrative',
-        title: 'Administrative',
+        title: 'Administrativo',
         type: 'collapsable',
         icon: 'heroicons_outline:cog-6-tooth',
         children: [
@@ -39,12 +39,19 @@ export const defaultNavigation: FuseNavigationItem[] = [
         icon: 'heroicons_outline:ticket',
         children: [
             {
-                id: 'raffles.users',
+                id: 'raffles.categories',
                 title: 'Raffles',
                 type: 'basic',
                 icon: 'heroicons_outline:gift',
                 link: 'raffles/categories',
             },
+            {
+                id: 'raffles.lottery',
+                title: 'Lottery',
+                type: 'basic',
+                icon: 'heroicons_outline:currency-dollar', // Icono más acorde para lotería
+                link: 'raffles/lottery'
+            }
         ]
     }
 ];

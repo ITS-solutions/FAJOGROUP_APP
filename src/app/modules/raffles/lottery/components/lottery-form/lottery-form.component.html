@@ -1,0 +1,67 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="space-y-6 p-4">
+    <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Nombre</mat-label>
+        <input
+            matInput
+            formControlName="name"
+            placeholder="Nombre de la lotería"
+        />
+        <mat-error
+            *ngIf="form.get('name')?.invalid && form.get('name')?.touched"
+        >
+            El nombre es obligatorio
+        </mat-error>
+    </mat-form-field>
+
+    <div class="mb-4">
+        <label class="mb-2 block font-medium text-gray-700">Imagen</label>
+        <label
+            class="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-primary transition hover:bg-primary/10"
+            [ngClass]="{
+                'border-green-500': imagePreview || initialData?.imageUrl,
+            }"
+        >
+            <mat-icon class="mb-2 text-4xl text-primary">cloud_upload</mat-icon>
+            <span class="mb-1 text-sm text-gray-500">
+                Haz clic o arrastra una imagen aquí
+            </span>
+            <input
+                type="file"
+                (change)="onFileChange($event)"
+                accept="image/*"
+                class="hidden"
+            />
+            <div *ngIf="imagePreview" class="absolute mt-2">
+                <img
+                    [src]="imagePreview"
+                    alt="Vista previa"
+                    class="h-24 w-24 rounded border-2 border-primary object-cover shadow"
+                />
+            </div>
+            <div
+                *ngIf="!imagePreview && initialData?.imageUrl"
+                class="absolute mt-2"
+            >
+                <img
+                    [src]="initialData.imageUrl"
+                    alt="Imagen actual"
+                    class="h-24 w-24 rounded border-2 border-gray-300 object-cover shadow"
+                />
+                <div class="text-center text-xs text-gray-500">
+                    Imagen actual
+                </div>
+            </div>
+        </label>
+    </div>
+
+    <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid || (!imagePreview && !initialData?.imageUrl)"
+        class="flex w-full items-center justify-center gap-2"
+    >
+        <mat-icon>save</mat-icon>
+        Guardar
+    </button>
+</form>

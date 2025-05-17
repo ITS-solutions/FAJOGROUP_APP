@@ -1,0 +1,6 @@
+<div *ngIf="loading">Cargando...</div>
+<app-lottery-form
+  *ngIf="!loading"
+  [initialData]="lottery"
+  (formSubmit)="onSubmit($event)">
+</app-lottery-form>
