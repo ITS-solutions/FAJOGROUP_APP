@@ -1,0 +1,136 @@
+<!-- Card -->
+<div class="text-on-card bg-card mx-auto w-full min-w-[320px] max-w-7xl overflow-hidden rounded-lg shadow-md">
+    <!-- Header -->
+    <div class="flex items-center justify-between bg-accent p-4 text-lg font-bold text-on-accent">
+        <span>Categorías</span>
+        <button
+            mat-raised-button
+            color="primary"
+            matTooltip="Añadir categoría"
+            (click)="openAddCategoryModal()"
+            class="flex items-center gap-2 bg-primary text-on-primary"
+        >
+            <mat-icon>add</mat-icon>
+            Añadir
+        </button>
+    </div>
+    <!-- Table -->
+    <div class="p-4">
+        <div class="hidden md:block">
+            <table mat-table [dataSource]="categories" class="mat-elevation-z8 w-full">
+                <!-- ID -->
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>ID</th>
+                    <td mat-cell *matCellDef="let cat">{{ cat.id }}</td>
+                </ng-container>
+                <!-- Name -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                    <td mat-cell *matCellDef="let cat">{{ cat.name }}</td>
+                </ng-container>
+                <!-- Description -->
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                    <td mat-cell *matCellDef="let cat">{{ cat.description }}</td>
+                </ng-container>
+                <!-- Icon -->
+                <ng-container matColumnDef="icon">
+                    <th mat-header-cell *matHeaderCellDef>Icono</th>
+                    <td mat-cell *matCellDef="let cat">{{ cat.icon }}</td>
+                </ng-container>
+                <!-- Status -->
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let cat">
+                        <span [ngClass]="cat.status === 1 ? 'text-green-600' : 'text-red-600'">
+                            {{ cat.status === 1 ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </td>
+                </ng-container>
+                <!-- Created At -->
+                <ng-container matColumnDef="created_at">
+                    <th mat-header-cell *matHeaderCellDef>Creado</th>
+                    <td mat-cell *matCellDef="let cat">{{ cat.created_at | date: 'short' }}</td>
+                </ng-container>
+                <!-- Updated At -->
+                <ng-container matColumnDef="updated_at">
+                    <th mat-header-cell *matHeaderCellDef>Actualizado</th>
+                    <td mat-cell *matCellDef="let cat">{{ cat.updated_at | date: 'short' }}</td>
+                </ng-container>
+                <!-- Actions -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <td mat-cell *matCellDef="let cat">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Acciones">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="editCategory(cat)">
+                                <mat-icon>edit</mat-icon>
+                                <span>Editar</span>
+                            </button>
+                            <button mat-menu-item (click)="confirmDelete(cat.id)">
+                                <mat-icon>delete</mat-icon>
+                                <span>Eliminar</span>
+                            </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+                <!-- Table Header and Rows -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+        </div>
+        <!-- Card view for mobile -->
+        <div class="block md:hidden">
+            <div *ngFor="let cat of categories" class="mb-4 rounded-lg border border-gray-200 bg-white p-4 text-gray-800 shadow-md">
+                <div class="mb-2 flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        {{ cat.name }}
+                    </h3>
+                    <span class="text-sm text-gray-500">ID: {{ cat.id }}</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="font-medium text-gray-600">Descripción:</p>
+                        <p>{{ cat.description }}</p>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-600">Icono:</p>
+                        <p>{{ cat.icon }}</p>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-600">Estado:</p>
+                        <p [ngClass]="cat.status === 1 ? 'text-green-600' : 'text-red-600'">
+                            {{ cat.status === 1 ? 'Activo' : 'Inactivo' }}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-600">Creado:</p>
+                        <p>{{ cat.created_at | date: 'short' }}</p>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-600">Actualizado:</p>
+                        <p>{{ cat.updated_at | date: 'short' }}</p>
+                    </div>
+                </div>
+                <div class="mt-2 flex gap-2">
+                    <button mat-icon-button color="primary" (click)="editCategory(cat)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="confirmDelete(cat.id)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Formulario modal (puedes usar Angular Material Dialog para mejor UX) -->
+    <!-- <ng-container *ngIf="showForm">
+        <app-add-remove
+            [category]="selectedCategory"
+            (save)="closeForm()"
+            (cancel)="closeForm()"
+        ></app-add-remove>
+    </ng-container> -->
+</div>

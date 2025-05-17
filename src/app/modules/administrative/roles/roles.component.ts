@@ -10,6 +10,7 @@ import { RoleService } from './services/role.service';
 import { ConfirmDialogComponent } from 'app/modules/components/comfirm-dialog/comfirm-dialog.component';
 import { AddRoleModalComponent } from './components/add-role-modal/add-role-modal.component';
 import { Role } from './types/Role.type';
+import { MODAL_CONFIG } from 'app/shared/config/modal-config';
 
 @Component({
     selector: 'app-roles',
@@ -51,10 +52,6 @@ export class RolesComponent implements OnInit {
      */
     openAddRoleModal(data?: Role): void {
         const dialogRef = this.dialog.open(AddRoleModalComponent, {
-            minWidth: '400px',
-            width: '70%',
-            maxWidth: '800px',
-            height: 'auto',
             data: { ...data },
             disableClose: true,
             hasBackdrop: true,

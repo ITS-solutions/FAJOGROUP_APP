@@ -1,4 +1,4 @@
-<div *ngIf="permissionsGroup" class="row">
+<div *ngIf="permissionsGroup" class="flex flex-col w-full">
     <!-- Nivel 1: administrative -->
     <div *ngFor="let sectionKey of getGroupKeys(permissionsGroup)">
         <h4>{{ sectionKey | titlecase }}</h4>

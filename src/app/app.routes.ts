@@ -90,5 +90,19 @@ export const appRoutes: Route[] = [
         children: [
             { path: 'administrative', loadChildren: () => import('app/modules/administrative/administrative.routes') },
         ]
+    },
+
+    // raffles routes
+    {
+        path: '',
+        canActivate: [AuthGuard],
+        canActivateChild: [AuthGuard],
+        component: LayoutComponent,
+        resolve: {
+            initialData: initialDataResolver
+        },
+        children: [
+            { path: 'raffles', loadChildren: () => import('app/modules/raffles/raffles.routes') },
+        ]
     }
 ];

@@ -11,6 +11,7 @@ import { UsersService } from './services/users.service';
 import { ConfirmDialogComponent } from 'app/modules/components/comfirm-dialog/comfirm-dialog.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { PermissionsService } from 'app/modules/services/permissions.service';
+import { MODAL_CONFIG } from 'app/shared/config/modal-config';
 
 @Component({
     selector: 'app-users',
@@ -75,10 +76,7 @@ export class UsersComponent implements OnInit {
      */
     openAddUserModal(data?: User): void {
         const dialogRef = this.dialog.open(AddUserModalComponent, {
-            minWidth: '400px',
-            width: '70%',
-            maxWidth: '800px',
-            height: 'auto',
+            ...MODAL_CONFIG,
             data: { ...data },
             disableClose: true,
             hasBackdrop: true,
@@ -98,10 +96,7 @@ export class UsersComponent implements OnInit {
  */
     editUser(user: User): void {
         const dialogRef = this.dialog.open(AddUserModalComponent, {
-            minWidth: '400px',
-            width: '70%',
-            maxWidth: '800px',
-            height: 'auto',
+            ...MODAL_CONFIG,
             data: { ...user }, // Pasar los datos del usuario al modal
             disableClose: true,
             hasBackdrop: true,

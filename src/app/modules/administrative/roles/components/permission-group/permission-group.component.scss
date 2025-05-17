@@ -1,0 +1,14 @@
+:host {
+    display: block;
+    width: 100%;
+    min-width: 0; /* Rompe el ciclo de ancho mínimo */
+}
+
+/* Añade estos estilos para contener elementos flex */
+fieldset {
+    min-width: 0; /* Previene overflow en fieldset */
+}
+
+.form-check {
+    white-space: nowrap; /* Mantiene checkboxes en una línea */
+}

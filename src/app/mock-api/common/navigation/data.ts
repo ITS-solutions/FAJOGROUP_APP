@@ -14,22 +14,37 @@ export const defaultNavigation: FuseNavigationItem[] = [
         id: 'administrative',
         title: 'Administrative',
         type: 'collapsable',
-        icon: 'heroicons_outline:chart-pie',
+        icon: 'heroicons_outline:cog-6-tooth',
         children: [
             {
                 id: 'administrative.users',
                 title: 'Users',
                 type: 'basic',
-                icon: 'heroicons_outline:user-group',
+                icon: 'heroicons_outline:users',
                 link: '/administrative/users',
             },
             {
                 id: 'administrative.roles',
                 title: 'Roles',
                 type: 'basic',
-                icon: 'heroicons_outline:user-group',
+                icon: 'heroicons_outline:key',
                 link: '/administrative/roles'
             }
+        ]
+    },
+    {
+        id: 'raffles',
+        title: 'Rifas',
+        type: 'collapsable',
+        icon: 'heroicons_outline:ticket',
+        children: [
+            {
+                id: 'raffles.users',
+                title: 'Raffles',
+                type: 'basic',
+                icon: 'heroicons_outline:gift',
+                link: 'raffles/categories',
+            },
         ]
     }
 ];
